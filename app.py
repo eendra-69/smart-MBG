@@ -5,7 +5,7 @@ from pulp import *
 
 # Konfigurasi Halaman Streamlit
 st.set_page_config(page_title="Optimasi Menu MBG", layout="wide")
-st.title("🍲 Aplikasi Optimasi Menu Makan Bergizi (MBG)")
+st.title("🍲 Smart Menu Builder Guide (Smart MBG)- Aplikasi Optimasi Menu MBG")
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1RaGjYtKssJOH6tS1kDH3x4LXM-DNi4jNJn26RZi-5aM/"
 
