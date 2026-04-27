@@ -197,6 +197,12 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
         for i in menu_list:
             model += lpSum(x[i][t] for t in HARI) <= 2
 
+        # 7. Pembatas: Menu yang sama tidak boleh muncul berurutan hari
+        for i in menu_list:
+            for d in range(len(HARI) - 1):
+                hari_ini = HARI[d]
+                besok = HARI[d+1]
+                model += x[i][hari_ini] + x[i][besok] <= 1
 
         # 6. Inventory constraint (SUPER OPTIMIZED)
         for bahan, usage_dict in bahan_usage.items():
