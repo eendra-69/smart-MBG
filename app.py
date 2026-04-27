@@ -123,7 +123,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             for m in metode_list:
                 if m != "Tanpa Masak":
                     menu_metode = df_menu[df_menu['metode_masak'] == m]['nama_menu'].tolist()
-                    model += lpSum([x[i][t] for i in menu_metode]) <= 1
+                    model += lpSum([x[i][t] for i in menu_metode]) <= 2
 
         model += total_biaya <= BUDGET_MINGGUAN
 
