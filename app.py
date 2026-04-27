@@ -112,12 +112,12 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
 
             for k in ZAT_GIZI:
                 kandungan_terpilih = lpSum([df_menu[df_menu['nama_menu'] == i][k].values[0] * x[i][t] for i in menu_list])
-                model += kandungan_terpilih >= 0.8 * target[k] # Hard limit 80%
-                model += kandungan_terpilih + shortage[k][t] >= target[k] # Soft limit 100%
+                model += kandungan_terpilih >= 0.4 * target[k] # Hard limit 40-80%
+                model += kandungan_terpilih + shortage[k][t] >= 0.9 * target[k] # Soft limit 90-100%
                 
-                # Batasan Karbohidrat minimal 40 gram
+                # Batasan Karbohidrat minimal 50 gram
                 if k == 'karbo':
-                    model += kandungan_terpilih >= 40
+                    model += kandungan_terpilih >= 50
 
             metode_list = df_menu['metode_masak'].unique()
             for m in metode_list:
