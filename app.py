@@ -119,11 +119,11 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
                 if k == 'karbo':
                     model += kandungan_terpilih >= 30
 
-            #metode_list = df_menu['metode_masak'].unique()
-            #for m in metode_list:
-            #    if m != "Tanpa Masak":
-            #        menu_metode = df_menu[df_menu['metode_masak'] == m]['nama_menu'].tolist()
-            #        model += lpSum([x[i][t] for i in menu_metode]) <= 1
+            metode_list = df_menu['metode_masak'].unique()
+            for m in metode_list:
+                if m != "Tanpa Masak":
+                    menu_metode = df_menu[df_menu['metode_masak'] == m]['nama_menu'].tolist()
+                    model += lpSum([x[i][t] for i in menu_metode]) <= 2
 
         model += total_biaya <= BUDGET_MINGGUAN
 
