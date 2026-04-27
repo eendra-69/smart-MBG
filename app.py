@@ -140,15 +140,15 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
                         model += x[h][HARI[i]] + x[n][HARI[i]] + x[h][HARI[j]] + x[n][HARI[j]] <= 3
 
         # Batas Stok Inventory
-        #bahan_unik_inventory = df_inventory['nama_bahan'].unique()
-        #for bahan in bahan_unik_inventory:
-        #    row_stok = df_inventory[df_inventory['nama_bahan'] == bahan].iloc[0]
-        #    batas_stok_kg = row_stok['stok_saat_ini'] - row_stok['buffer_stock']
-        #    penggunaan_bahan = lpSum([
-        #        (df_recipe[(df_recipe['nama_bahan'] == bahan) & (df_recipe['nama_menu'] == i)]['berat_per_porsi'].sum() / 1000) 
-        #        * N_SISWA * x[i][t] for i in menu_list for t in HARI
-        #    ])
-        #    model += penggunaan_bahan <= batas_stok_kg
+        bahan_unik_inventory = df_inventory['nama_bahan'].unique()
+        for bahan in bahan_unik_inventory:
+            row_stok = df_inventory[df_inventory['nama_bahan'] == bahan].iloc[0]
+            batas_stok_kg = row_stok['stok_saat_ini'] - row_stok['buffer_stock']
+            penggunaan_bahan = lpSum([
+                (df_recipe[(df_recipe['nama_bahan'] == bahan) & (df_recipe['nama_menu'] == i)]['berat_per_porsi'].sum() / 1000) 
+                * N_SISWA * x[i][t] for i in menu_list for t in HARI
+            ])
+            model += penggunaan_bahan <= batas_stok_kg
 
         # Solve Model
         model.solve(PULP_CBC_CMD(msg=0))
