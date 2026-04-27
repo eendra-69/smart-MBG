@@ -45,13 +45,13 @@ st.sidebar.header("⚙️ Parameter Optimasi")
 JENJANG = st.sidebar.selectbox("Tingkat Sekolah", ["SD", "SMP", "SMA"], index=0)
 N_SISWA = st.sidebar.number_input("Jumlah Siswa", min_value=1, value=300)
 BUDGET_MINGGUAN = st.sidebar.number_input("Budget 6 Hari (Rp)", min_value=100000, value=15000000, step=100000)
-PENALTI_GIZI = st.sidebar.number_input("Penalti per poin kurang gizi", min_value=0.0, value=5.0)
-PENALTI_LEFTOVER = st.sidebar.number_input("Penalti per 1% leftover", min_value=0.0, value=100.0)
+PENALTI_GIZI = st.sidebar.number_input("Penalti per poin selisih target gizi (Rp)", min_value=0.0, value=5.0)
+PENALTI_LEFTOVER = st.sidebar.number_input("Penalti per 1% sisa makanan (Rp)", min_value=0.0, value=100.0)
 
 # ==========================================
 # PRA-PEMROSESAN DATA
 # ==========================================
-df_recipe_price = pd.merge(df_recipe, df_prices, left_on='nama_bahan', right_on='bahan', how='left')
+df_recipe_price = pd.merge(df_recipe, df_prices, left_on='nama_bahan', right_on='nama bahan', how='left')
 # Ganti 'harga pasar' di bawah ini dengan 'harga koperasi' jika Anda ingin menggunakan harga koperasi
 df_recipe_price['biaya_bahan'] = (df_recipe_price['berat_per_porsi'] / 1000) * df_recipe_price['harga pasar']
 biaya_per_menu = df_recipe_price.groupby('id_menu')['biaya_bahan'].sum().to_dict()
