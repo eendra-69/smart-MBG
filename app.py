@@ -76,7 +76,7 @@ id_to_nama = df_menu.set_index('id_menu')['nama_menu'].to_dict()
 df_recipe['nama_menu'] = df_recipe['id_menu'].map(id_to_nama)
 
 HARI = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
-KATEGORI = ["Karbohidrat", "Protein Hewani", "Protein Nabati", "Sayur", "Buah"]
+KATEGORI = ["Menu Pokok", "Protein Hewani", "Protein Nabati", "Sayur", "Buah"]
 ZAT_GIZI = ['kcal', 'protein', 'karbo', 'lemak']
 
 target_gizi = df_nutrition[df_nutrition['tingkat sekolah'] == JENJANG].iloc[0]
@@ -184,7 +184,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             st.dataframe(df_utama, use_container_width=True)
             
             st.subheader("⚖️ Tabel 2: Detail Berat Porsi & Akumulasi Gizi")
-            kolom_detail = ["Hari", "Berat Karbo", "Berat P.Hewani", "Berat P.Nabati", "Berat Sayur", "Berat Buah", "Total Kcal", "Karbo (g)", "Protein (g)", "Lemak (g)"]
+            kolom_detail = ["Hari", "Berat M.Pokok", "Berat P.Hewani", "Berat P.Nabati", "Berat Sayur", "Berat Buah", "Total Kcal", "Karbo (g)", "Protein (g)", "Lemak (g)"]
             df_detail = pd.DataFrame(jadwal_detail, columns=kolom_detail)
             st.dataframe(df_detail, use_container_width=True)
 
