@@ -247,7 +247,10 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             df_detail = pd.DataFrame(jadwal_detail, columns=kolom_detail)
             st.dataframe(df_detail, use_container_width=True)
 
-            st.metric(label="Total Biaya 6 Hari", value=f"Rp {value(total_biaya):,.0f}")
+            # Menghitung total biaya dari menu yang final terpilih
+            total_biaya_aktual = sum([df_menu[df_menu['nama_menu'] == i]['biaya'].values[0] * N_SISWA for i in menu_list for t in HARI if value(x[i][t]) == 1])
+            
+            st.metric(label="Total Biaya 6 Hari", value=f"Rp {total_biaya_aktual:,.0f}")
 
         else:
             st.error("❌ Model Infeasible: Tidak ada kombinasi menu yang memenuhi syarat.")
