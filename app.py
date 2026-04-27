@@ -128,7 +128,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
         model += total_biaya <= BUDGET_MINGGUAN
 
         for i in menu_list:
-            model += lpSum([x[i][t] for t in HARI]) <= 2
+            model += lpSum([x[i][t] for t in HARI]) <= 3
 
         # Kombinasi Protein Hewani dan Nabati tidak boleh sama
         menu_hewani = df_menu[df_menu['kategori'] == 'Protein Hewani']['nama_menu'].tolist()
