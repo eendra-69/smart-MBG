@@ -2,7 +2,7 @@ import streamlit as st
 import gspread
 import pandas as pd
 from pulp import *
-from ortools.sat.python import cp_model
+
 
 
 
