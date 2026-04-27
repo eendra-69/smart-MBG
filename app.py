@@ -253,6 +253,52 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             df_detail = pd.DataFrame(jadwal_detail, columns=kolom_detail)
             st.dataframe(df_detail, use_container_width=True)
 
+            # ==========================================
+            # TABEL 3: REKAP BELANJA BAHAN (TAMBAHKAN MULAI DARI SINI)
+            # ==========================================
+            st.subheader("🛒 Tabel 3: Kebutuhan Belanja Bahan (Kg)")
+            
+            data_belanja = []
+            
+            for t in HARI:
+                menu_hari_ini = [i for i in menu_list if value(x[i][t]) == 1]
+                
+                # Cari resep untuk setiap menu yang terpilih hari ini
+                for m in menu_hari_ini:
+                    resep_m = df_recipe[df_recipe['nama_menu'] == m]
+                    for _, row in resep_m.iterrows():
+                        bahan = row['nama_bahan']
+                        berat_per_porsi_g = row['berat_per_porsi']
+                        # Hitung total kebutuhan dalam Kg
+                        kebutuhan_kg = (berat_per_porsi_g * N_SISWA) / 1000 
+                        
+                        data_belanja.append({
+                            "Nama Bahan": bahan,
+                            "Hari": t,
+                            "Kebutuhan (Kg)": kebutuhan_kg
+                        })
+            
+            if data_belanja:
+                df_belanja = pd.DataFrame(data_belanja)
+                
+                # Buat tabel pivot agar kolomnya adalah Hari
+                df_pivot_belanja = df_belanja.groupby(['Nama Bahan', 'Hari'])['Kebutuhan (Kg)'].sum().unstack(fill_value=0)
+                
+                # Pastikan urutan kolom sesuai urutan HARI
+                kolom_hari_ada = [hari for hari in HARI if hari in df_pivot_belanja.columns]
+                df_pivot_belanja = df_pivot_belanja[kolom_hari_ada]
+                
+                # Tambahkan kolom Total Mingguan
+                df_pivot_belanja['Total Mingguan (Kg)'] = df_pivot_belanja.sum(axis=1)
+                
+                # Tampilkan tabel di Streamlit dengan format 2 angka desimal
+                st.dataframe(df_pivot_belanja.style.format("{:.2f}"), use_container_width=True)
+            else:
+                st.info("Data resep tidak ditemukan untuk membuat daftar belanja.")
+            # ==========================================
+            # AKHIR TABEL 3
+            # ==========================================
+
             # Menghitung total biaya dari menu yang final terpilih
             total_biaya_aktual = sum([df_menu[df_menu['nama_menu'] == i]['biaya'].values[0] * N_SISWA for i in menu_list for t in HARI if value(x[i][t]) == 1])
             
