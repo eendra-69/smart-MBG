@@ -51,7 +51,7 @@ PENALTI_LEFTOVER = st.sidebar.number_input("Penalti per 1% leftover", min_value=
 # ==========================================
 # PRA-PEMROSESAN DATA
 # ==========================================
-df_recipe_price = pd.merge(df_recipe, df_prices, left_on='nama_bahan', right_on='bahan', how='left')
+df_recipe_price = pd.merge(df_recipe, df_prices, left_on='nama_bahan', right_on='nama bahan', how='left')
 # Ganti 'harga pasar' di bawah ini dengan 'harga koperasi' jika Anda ingin menggunakan harga koperasi
 df_recipe_price['biaya_bahan'] = (df_recipe_price['berat_per_porsi'] / 1000) * df_recipe_price['harga pasar']
 biaya_per_menu = df_recipe_price.groupby('id_menu')['biaya_bahan'].sum().to_dict()
