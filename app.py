@@ -5,7 +5,7 @@ from pulp import *
 
 # Konfigurasi Halaman Streamlit
 st.set_page_config(page_title="Optimasi Menu MBG", layout="wide")
-st.title("🍲 Aplikasi Optimasi Menu Makan Bergizi (MBG)")
+st.title("🍲 Smart Menu Builder Guide (Smart MBG) - Aplikasi Optimasi Menu Makan Bergizi Gratis")
 
 SHEET_URL = "https://docs.google.com/spreadsheets/d/1RaGjYtKssJOH6tS1kDH3x4LXM-DNi4jNJn26RZi-5aM/"
 
@@ -44,9 +44,9 @@ except Exception as e:
 st.sidebar.header("⚙️ Parameter Optimasi")
 JENJANG = st.sidebar.selectbox("Tingkat Sekolah", ["SD", "SMP", "SMA"], index=0)
 N_SISWA = st.sidebar.number_input("Jumlah Siswa", min_value=1, value=300)
-BUDGET_MINGGUAN = st.sidebar.number_input("Budget 6 Hari (Rp)", min_value=100000, value=15000000, step=100000)
-PENALTI_GIZI = st.sidebar.number_input("Penalti per poin kurang gizi", min_value=0.0, value=5.0)
-PENALTI_LEFTOVER = st.sidebar.number_input("Penalti per 1% leftover", min_value=0.0, value=100.0)
+BUDGET_MINGGUAN = st.sidebar.number_input("Anggaran Bahan 6 Hari (Rp)", min_value=100000, value=15000000, step=100000)
+PENALTI_GIZI = st.sidebar.number_input("Penalti per poin selisih target gizi (Rp)", min_value=0.0, value=5.0)
+PENALTI_LEFTOVER = st.sidebar.number_input("Penalti per 1% Makanan Tersisa (Rp)", min_value=0.0, value=100.0)
 
 # ==========================================
 # PRA-PEMROSESAN DATA
@@ -76,7 +76,7 @@ id_to_nama = df_menu.set_index('id_menu')['nama_menu'].to_dict()
 df_recipe['nama_menu'] = df_recipe['id_menu'].map(id_to_nama)
 
 HARI = ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
-KATEGORI = ["Karbohidrat", "Protein Hewani", "Protein Nabati", "Sayur", "Buah"]
+KATEGORI = ["Menu Pokok", "Protein Hewani", "Protein Nabati", "Sayur", "Buah"]
 ZAT_GIZI = ['kcal', 'protein', 'karbo', 'lemak']
 
 target_gizi = df_nutrition[df_nutrition['tingkat sekolah'] == JENJANG].iloc[0]
@@ -184,7 +184,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             st.dataframe(df_utama, use_container_width=True)
             
             st.subheader("⚖️ Tabel 2: Detail Berat Porsi & Akumulasi Gizi")
-            kolom_detail = ["Hari", "Berat Karbo", "Berat P.Hewani", "Berat P.Nabati", "Berat Sayur", "Berat Buah", "Total Kcal", "Karbo (g)", "Protein (g)", "Lemak (g)"]
+            kolom_detail = ["Hari", "Berat Pokok", "Berat P.Hewani", "Berat P.Nabati", "Berat Sayur", "Berat Buah", "Total Kcal", "Karbo (g)", "Protein (g)", "Lemak (g)"]
             df_detail = pd.DataFrame(jadwal_detail, columns=kolom_detail)
             st.dataframe(df_detail, use_container_width=True)
 
