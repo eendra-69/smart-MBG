@@ -339,7 +339,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             model += lpSum(
             	biaya_dict_dinamis[i] * N_SISWA * x[i][t]
             	for i in menu_list for t in HARI
-        ) < BUDGET_MINGGUAN	
+        ) <= BUDGET_MINGGUAN	
 
 
         # 5. Maksimal muncul 2x
