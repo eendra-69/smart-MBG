@@ -194,24 +194,25 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
         model += lpSum(
             biaya_dict[i] * N_SISWA * x[i][t]
             + leftover_dict[i] * 100 * PENALTI_LEFTOVER * x[i][t]
-            for i in menu_list
+            for i in menu_list for t in HARI
         ) + lpSum(
             shortage[k][t] * PENALTI_GIZI
-            for k in ZAT_GIZI) <= BUDGET_MINGGUAN
+            for k in ZAT_GIZI for t in HARI
+        ) <= BUDGET_MINGGUAN
 
 
         # 5. Maksimal muncul 2x
         for i in menu_list:
-            model += lpSum(x[i][t]) <= 2
+            model += lpSum(x[i][t] for t in HARI) <= 2
 
-        # 7. Pembatas: Menu yang sama tidak boleh muncul berurutan hari
+        # 6. Pembatas: Menu yang sama tidak boleh muncul berurutan hari
         for i in menu_list:
             for d in range(len(HARI) - 1):
                 hari_ini = HARI[d]
                 besok = HARI[d+1]
                 model += x[i][hari_ini] + x[i][besok] <= 1
 
-        # 6. Inventory constraint (SUPER OPTIMIZED)
+        # 7. Inventory constraint (SUPER OPTIMIZED)
         for bahan, usage_dict in bahan_usage.items():
 
             row = df_inventory[df_inventory['nama_bahan'] == bahan].iloc[0]
@@ -219,7 +220,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
 
             model += lpSum(
                 usage_dict.get(i, 0) * N_SISWA * x[i][t]
-                for i in menu_list
+                for i in menu_list for t in HARI
             ) <= batas
 
         # Solve Model
