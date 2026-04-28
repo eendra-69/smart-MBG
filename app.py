@@ -32,9 +32,9 @@ def load_data():
 
 # Load data dengan error handling
 try:
-    with st.spinner('Menghubungkan ke Google Sheets...'):
+    with st.spinner('Menghubungkan ke Database...'):
         df_menu, df_recipe, df_ingredients, df_nutrition, df_leftover, df_prices, df_inventory = load_data()
-    st.success("✅ Data berhasil dimuat dari Google Sheets!")
+    st.success("✅ Data berhasil dimuat dari Database")
 except Exception as e:
     st.error(f"Gagal mengambil data: {e}")
     st.stop()
@@ -52,9 +52,9 @@ N_SISWA = st.sidebar.number_input("Jumlah Siswa", min_value=1, value=300)
 
 # Default budget disesuaikan otomatis berdasarkan jumlah hari (Asumsi dasar 2.5jt per hari)
 default_budget = int(JUMLAH_HARI * 2500000)
-BUDGET_MINGGUAN = st.sidebar.number_input(f"Budget {JUMLAH_HARI} Hari (Rp)", min_value=100000, value=default_budget, step=100000)
+BUDGET_MINGGUAN = st.sidebar.number_input(f"Anggaran {JUMLAH_HARI} Hari (Rp)", min_value=100000, value=default_budget, step=100000)
 
-PENALTI_GIZI = st.sidebar.number_input("Penalti per poin selisih target gizi (Rp)", min_value=0.0, value=5.0)
+PENALTI_GIZI = st.sidebar.number_input("Penalti per poin selisih target gizi (Rp)", min_value=0.0, value=10.0)
 PENALTI_LEFTOVER = st.sidebar.number_input("Penalti per 1% sisa makanan (Rp)", min_value=0.0, value=100.0)
 
 # ==========================================
@@ -165,7 +165,7 @@ class WasteSentimentAgent:
         high_waste_menus = df_leftover[df_leftover['persentase_leftover_Li'] > self.threshold_waste]
         
         if high_waste_menus.empty:
-            laporan_naratif += "✅ Seluruh menu dieksekusi dengan baik minggu lalu (Sisa < 20%). Tidak ada penalti tambahan yang diterapkan."
+            laporan_naratif += "✅ Seluruh menu disajikan dengan baik minggu lalu (Sisa < 20%). Tidak ada penalti tambahan yang diterapkan."
         else:
             laporan_naratif += f"⚠️ Peringatan: Ditemukan {len(high_waste_menus)} menu dengan tingkat sisa di atas {self.threshold_waste}%!\n"
             
@@ -179,7 +179,7 @@ class WasteSentimentAgent:
                 
                 laporan_naratif += f"- **{nama}**: Sisa {sisa}%. 🔨 *Tindakan: Penalti dilipatgandakan {self.penalty_multiplier}x.*\n"
                 
-            laporan_naratif += "\n*Agen telah menyuntikkan data penalti baru ke mesin utama. Menu di atas akan sangat dihindari untuk jadwal berikutnya.*"
+            laporan_naratif += "\n*Agen telah memberikan data penalti baru ke kalkulasi utama. Menu di atas akan sangat dihindari untuk jadwal berikutnya.*"
             
         return adjusted_leftover_dict, laporan_naratif
 
@@ -187,7 +187,7 @@ class WasteSentimentAgent:
 waste_agent = WasteSentimentAgent(threshold_waste=20.0, penalty_multiplier=1.5)
 
 # ==========================================
-# 📈 AGEN 2: MARKET & PROCUREMENT AGENT (VERSI UPDATE KOMPARATIF)
+# 📈 AGEN 2: MARKET & PROCUREMENT AGENT
 # ==========================================
 class MarketProcurementAgent:
     def __init__(self, simulation_mode=True):
@@ -200,8 +200,8 @@ class MarketProcurementAgent:
         updated_prices['harga_final'] = 0.0 
         updated_prices['sumber_pilihan'] = ""
         
-        laporan_naratif = "🌐 **Laporan Agen Pembelian (Procurement):**\n\n"
-        laporan_naratif += "🔍 *Membandingkan harga Vendor Lokal, Koperasi, dan Pasar (Scraping)...*\n\n"
+        laporan_naratif = "🌐 **Laporan Agen Procurement:**\n\n"
+        laporan_naratif += "🔍 *Membandingkan harga Vendor Lokal, Koperasi, dan Pasar Induk....*\n\n"
         
         perubahan_harga = []
         
@@ -244,8 +244,8 @@ class MarketProcurementAgent:
         if perubahan_harga:
             laporan_naratif += "\n".join(perubahan_harga[:7])
             if len(perubahan_harga) > 7:
-                laporan_naratif += f"\n*...serta {len(perubahan_harga) - 7} bahan lain sukses dihemat.*"
-            laporan_naratif += "\n\n💰 *Harga termurah otomatis disuntikkan ke mesin perhitungan AI.*"
+                laporan_naratif += f"\n*...serta {len(perubahan_harga) - 7} bahan lain berhasil dihemat.*"
+            laporan_naratif += "\n\n💰 *Harga termurah otomatis diterapkan ke mesin perhitungan.*"
         else:
             laporan_naratif += "✅ *Gagal mendapatkan perbandingan harga.*"
             
@@ -258,7 +258,7 @@ market_agent = MarketProcurementAgent()
 # TOMBOL EKSEKUSI
 # ==========================================
 if st.button("🚀 Buat Jadwal Menu!", type="primary"):
-   with st.spinner("Para Agen sedang berdiskusi dan mesin AI sedang menghitung kombinasi menu..."):
+   with st.spinner("Para Analis sedang berdiskusi dan mesin AI sedang menghitung kombinasi menu..."):
         
        # --- (BAGIAN BARU: EKSEKUSI MULTI-AGENT) ---
         kolom_agen1, kolom_agen2 = st.columns(2)
@@ -405,8 +405,8 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
 			# ==========================================
             # TABEL 3: REKAP BELANJA BAHAN PER KANDIDAT / SUMBER
             # ==========================================
-            st.subheader("🛒 Tabel 3: Daftar Belanja Harian (Dikelompokkan per Pemasok)")
-            st.markdown("Berikut adalah instruksi pembelian otomatis yang telah dioptimasi oleh *Agen Procurement*:")
+            st.subheader("🛒 Tabel 3: Daftar Belanja Harian (per Pemasok)")
+            st.markdown("Berikut adalah instruksi pembelian otomatis yang telah dioptimasi:")
             
             data_belanja = []
             
