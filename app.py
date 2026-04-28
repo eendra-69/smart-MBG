@@ -179,7 +179,7 @@ class WasteSentimentAgent:
                 
                 laporan_naratif += f"- **{nama}**: Sisa {sisa}%. 🔨 *Tindakan: Penalti dilipatgandakan {self.penalty_multiplier}x.*\n"
                 
-            laporan_naratif += "\n*Agen telah memberikan data penalti baru ke kalkulasi utama. Menu di atas akan sangat dihindari untuk jadwal berikutnya.*"
+            laporan_naratif += "\n*🍲Menu di atas akan sangat dihindari untuk jadwal berikutnya.*"
             
         return adjusted_leftover_dict, laporan_naratif
 
@@ -200,7 +200,7 @@ class MarketProcurementAgent:
         updated_prices['harga_final'] = 0.0 
         updated_prices['sumber_pilihan'] = ""
         
-        laporan_naratif = "🌐 **Laporan Agen Procurement:**\n\n"
+        laporan_naratif = "🌐 **Laporan Agen Pembelian:**\n\n"
         laporan_naratif += "🔍 *Membandingkan harga Vendor Lokal, Koperasi, dan Pasar Induk....*\n\n"
         
         perubahan_harga = []
