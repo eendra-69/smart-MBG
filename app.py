@@ -200,8 +200,9 @@ class MarketProcurementAgent:
         """
         updated_prices = df_prices.copy()
         
-        # Buat kolom baru untuk menyimpan harga pemenang (termurah)
-        updated_prices['harga_final'] = 0.0 
+        # Buat kolom baru untuk menyimpan harga termurah dan sumbernya
+        updated_prices['harga_final'] = 0.0
+		updated_prices['sumber_pilihan'] = ""  # <--- BARIS BARU INI DITAMBAHKAN
         
         laporan_naratif = "🌐 **Laporan Agen Pembelian (Procurement):**\n\n"
         laporan_naratif += "🔍 *Membandingkan harga Vendor Lokal, Koperasi, dan Pasar (Scraping)...*\n\n"
@@ -416,12 +417,17 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             df_detail = pd.DataFrame(jadwal_detail, columns=kolom_detail)
             st.dataframe(df_detail, use_container_width=True)
 
+			# ==========================================
+            # TABEL 3: REKAP BELANJA BAHAN PER KANDIDAT / SUMBER
             # ==========================================
-            # TABEL 3: REKAP BELANJA BAHAN
-            # ==========================================
-            st.subheader("🛒 Tabel 3: Kebutuhan Belanja Bahan (Kg)")
+            st.subheader("🛒 Tabel 3: Daftar Belanja Harian (Dikelompokkan per Pemasok)")
+            st.markdown("Berikut adalah instruksi pembelian otomatis yang telah dioptimasi oleh *Agen Procurement*:")
             
             data_belanja = []
+            
+            # Buat kamus (dictionary) cepat untuk mencari siapa supplier bahan ini dan harganya
+            sumber_dict = updated_df_prices.set_index('nama bahan')['sumber_pilihan'].to_dict()
+            harga_dict = updated_df_prices.set_index('nama bahan')['harga_final'].to_dict()
             
             for t in HARI:
                 menu_hari_ini = [i for i in menu_list if value(x[i][t]) == 1]
@@ -432,30 +438,52 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
                     for _, row in resep_m.iterrows():
                         bahan = row['nama_bahan']
                         berat_per_porsi_g = row['berat_per_porsi']
-                        # Hitung total kebutuhan dalam Kg
+                        
+                        # Hitung kebutuhan
                         kebutuhan_kg = (berat_per_porsi_g * N_SISWA) / 1000 
+                        
+                        # Ambil data dari hasil agen
+                        sumber = sumber_dict.get(bahan, "Vendor Lokal") # Default jika tidak ada
+                        harga_per_kg = harga_dict.get(bahan, 0)
+                        estimasi_biaya = kebutuhan_kg * harga_per_kg
                         
                         data_belanja.append({
                             "Nama Bahan": bahan,
                             "Hari": t,
-                            "Kebutuhan (Kg)": kebutuhan_kg
+                            "Sumber Pemasok": sumber,
+                            "Kebutuhan (Kg)": kebutuhan_kg,
+                            "Estimasi Biaya": estimasi_biaya
                         })
             
             if data_belanja:
                 df_belanja = pd.DataFrame(data_belanja)
                 
-                # Buat tabel pivot agar kolomnya adalah Hari
-                df_pivot_belanja = df_belanja.groupby(['Nama Bahan', 'Hari'])['Kebutuhan (Kg)'].sum().unstack(fill_value=0)
+                # Mendapatkan daftar kandidat unik yang terpilih (misal: hanya Koperasi dan Pasar)
+                sumber_terpilih = df_belanja['Sumber Pemasok'].unique()
                 
-                # Pastikan urutan kolom sesuai urutan HARI
-                kolom_hari_ada = [hari for hari in HARI if hari in df_pivot_belanja.columns]
-                df_pivot_belanja = df_pivot_belanja[kolom_hari_ada]
-                
-                # Tambahkan kolom Total Mingguan Dinamis
-                df_pivot_belanja[f'Total {JUMLAH_HARI} Hari (Kg)'] = df_pivot_belanja.sum(axis=1)
-                
-                # Tampilkan tabel di Streamlit dengan format 2 angka desimal
-                st.dataframe(df_pivot_belanja.style.format("{:.2f}"), use_container_width=True)
+                # Looping untuk membuat tabel terpisah untuk setiap kandidat
+                for pemasok in sumber_terpilih:
+                    with st.expander(f"📦 Daftar Belanja: {pemasok}", expanded=True):
+                        # Filter data khusus untuk pemasok ini
+                        df_sub = df_belanja[df_belanja['Sumber Pemasok'] == pemasok]
+                        
+                        # Buat tabel pivot
+                        df_pivot_belanja = df_sub.groupby(['Nama Bahan', 'Hari'])['Kebutuhan (Kg)'].sum().unstack(fill_value=0)
+                        
+                        # Pastikan urutan hari
+                        kolom_hari_ada = [hari for hari in HARI if hari in df_pivot_belanja.columns]
+                        df_pivot_belanja = df_pivot_belanja[kolom_hari_ada]
+                        
+                        # Tambahkan Total Kebutuhan
+                        df_pivot_belanja[f'Total {JUMLAH_HARI} Hari (Kg)'] = df_pivot_belanja.sum(axis=1)
+                        
+                        # Tampilkan ke layar
+                        st.dataframe(df_pivot_belanja.style.format("{:.2f}"), use_container_width=True)
+                        
+                        # Hitung tagihan per kandidat
+                        total_tagihan = df_sub['Estimasi Biaya'].sum()
+                        st.info(f"💵 **Estimasi Tagihan ke {pemasok} minggu ini: Rp {total_tagihan:,.0f}**")
+                        
             else:
                 st.info("Data resep tidak ditemukan untuk membuat daftar belanja.")
             # ==========================================
