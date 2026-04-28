@@ -203,7 +203,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
 
         # 5. Maksimal muncul 2x
         for i in menu_list:
-            model += lpSum(x[i][t] for t in HARI) <= 2
+            model += lpSum(x[i][t] for t in HARI) <= 1
 
         # 6. Pembatas: Menu yang sama tidak boleh muncul berurutan hari
         for i in menu_list:
