@@ -338,13 +338,17 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
 	    # 4. Budget constraint (PASTIKAN MENGGUNAKAN biaya_dict_dinamis JUGA)
             model += lpSum(
             	biaya_dict_dinamis[i] * N_SISWA * x[i][t]
-            	for i in menu_list for t in HARI
+            	+ adjusted_leftover_dict[i] * 100 * PENALTI_LEFTOVER * x[i][t] 
+            	for i in menu_list
+        		) + lpSum(
+            	shortage[k][t] * PENALTI_GIZI
+            	for k in ZAT_GIZI
         ) <= BUDGET_MINGGUAN	
 
 
         # 5. Maksimal muncul 2x
         for i in menu_list:
-            model += lpSum(x[i][t] for t in HARI) <= 2
+            model += lpSum(x[i][t]) <= 2
 
         # 7. Pembatas: Menu yang sama tidak boleh muncul berurutan hari
         for i in menu_list:
@@ -361,7 +365,7 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
 
             model += lpSum(
                 usage_dict.get(i, 0) * N_SISWA * x[i][t]
-                for i in menu_list for t in HARI
+                for i in menu_list
             ) <= batas
 
         # Solve Model
