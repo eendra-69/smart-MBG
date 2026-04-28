@@ -194,15 +194,11 @@ class MarketProcurementAgent:
         self.simulation_mode = simulation_mode
 
     def fetch_real_time_prices(self, df_prices):
-        """
-        Mensimulasikan Web Scraping harga real-time dan membandingkannya 
-        dengan harga Koperasi dan Vendor Lokal di Database.
-        """
         updated_prices = df_prices.copy()
         
-        # Buat kolom baru untuk menyimpan harga termurah dan sumbernya
-        updated_prices['harga_final'] = 0.0
-		updated_prices['sumber_pilihan'] = ""  # <--- BARIS BARU INI DITAMBAHKAN
+        # Buat kolom baru untuk menyimpan harga pemenang dan sumbernya
+        updated_prices['harga_final'] = 0.0 
+        updated_prices['sumber_pilihan'] = ""
         
         laporan_naratif = "🌐 **Laporan Agen Pembelian (Procurement):**\n\n"
         laporan_naratif += "🔍 *Membandingkan harga Vendor Lokal, Koperasi, dan Pasar (Scraping)...*\n\n"
@@ -212,49 +208,39 @@ class MarketProcurementAgent:
         for index, row in updated_prices.iterrows():
             bahan = row['nama bahan']
             
-            # 1. AMBIL DATA DARI GOOGLE SHEETS
-            # Menggunakan .get() agar aplikasi tidak error jika kolom kosong/salah ketik.
-            # Jika kosong, sistem akan membuat sedikit angka fallback (simulasi).
-            
             harga_Pasar_Induk = float(row.get('harga pasar induk', row.get('harga pasar', 0)))
             harga_vendor_lokal = float(row.get('harga vendor lokal', harga_Pasar_Induk * 1.05)) 
             harga_koperasi = float(row.get('harga koperasi', harga_Pasar_Induk * 1.02))
             
-            # 2. SIMULASI HARGA "PASAR" (Hasil Scraping berdasarkan acuan Pasar Induk)
-            # Fluktuasi naik turun layaknya harga harian di pasar tradisional
             peluang = random.random()
             if peluang < 0.25:
-                harga_scraping = harga_Pasar_Induk * random.uniform(0.80, 0.95) # Diskon besar / panen raya
+                harga_scraping = harga_Pasar_Induk * random.uniform(0.80, 0.95)
             elif peluang < 0.45:
-                harga_scraping = harga_Pasar_Induk * random.uniform(1.10, 1.30) # Inflasi / langka
+                harga_scraping = harga_Pasar_Induk * random.uniform(1.10, 1.30)
             else:
-                harga_scraping = harga_Pasar_Induk * random.uniform(0.98, 1.02) # Normal/Stabil
+                harga_scraping = harga_Pasar_Induk * random.uniform(0.98, 1.02)
             
-            # 3. KUMPULKAN KANDIDAT HARGA SESUAI PERMINTAAN
             kandidat = {
                 "Vendor Lokal": harga_vendor_lokal,
                 "Koperasi": harga_koperasi,
-                "Pasar": harga_scraping
+                "Pasar Induk": harga_scraping
             }
             
-            # Filter hanya harga yang lebih dari 0 (mencegah error dari cell GSheet yang kosong)
             kandidat_valid = {k: v for k, v in kandidat.items() if v > 0}
             
             if kandidat_valid:
-                # 🏆 CARI HARGA TERMURAH DARI 3 KANDIDAT TERSEBUT
                 pemenang_sumber = min(kandidat_valid, key=kandidat_valid.get)
                 harga_termurah = kandidat_valid[pemenang_sumber]
             else:
-                pemenang_sumber = "Sistem Default"
+                pemenang_sumber = "Vendor Lokal" # Default fallback
                 harga_termurah = 0
                 
-            # Simpan harga pemenang ke dalam kolom baru 'harga_final'
+            # Simpan harga pemenang DAN SUMBERNYA
             updated_prices.at[index, 'harga_final'] = harga_termurah
+            updated_prices.at[index, 'sumber_pilihan'] = pemenang_sumber # <--- BARIS BARU INI DITAMBAHKAN
             
-            # Log hasil keputusan agen
             perubahan_harga.append(f"✅ **{bahan}**: Rp {harga_termurah:,.0f}/kg ➔ *Diambil dari {pemenang_sumber}*")
 
-        # Tampilkan maksimal 7 tindakan penghematan terbaik agar UI Streamlit tidak kepanjangan
         if perubahan_harga:
             laporan_naratif += "\n".join(perubahan_harga[:7])
             if len(perubahan_harga) > 7:
@@ -267,7 +253,6 @@ class MarketProcurementAgent:
 
 # Inisiasi Agen Pasar
 market_agent = MarketProcurementAgent()
-
 
 # ==========================================
 # TOMBOL EKSEKUSI
