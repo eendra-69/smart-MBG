@@ -178,11 +178,11 @@ if st.button("🚀 Buat Jadwal Menu!", type="primary"):
             for k in ZAT_GIZI:
                 kandungan = lpSum(nutrisi_dict[i][k] * x[i][t] for i in menu_list)
 
-                model += kandungan >= 0.6 * target[k]
+                model += kandungan >= 0.75 * target[k]
                 model += kandungan + shortage[k][t] >= target[k]
 
                 if k == 'karbo':
-                    model += kandungan >= 40
+                    model += kandungan >= 45
 
             # 3. Metode masak constraint
             for m, menus in metode_menu.items():
