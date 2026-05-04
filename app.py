@@ -1,32 +1,28 @@
 import streamlit as st
 # ==========================================
-# PENGATURAN TAMPILAN UI (CSS HACK ALTERNATIF)
+# PENGATURAN TAMPILAN UI (TRIK KAMUFLASE TRANSPARAN)
 # ==========================================
-hide_fork_style = """
+hide_st_style = """
             <style>
-            /* 1. Sembunyikan khusus elemen iframe/jendela yang disuntikkan Streamlit Cloud */
-            iframe[title*="GitHub"] {
-                display: none !important;
-            }
-            iframe[src*="badge"] {
-                display: none !important;
+            /* Mengubah tombol Fork / GitHub Badge menjadi 100% transparan */
+            [class*="viewerBadge"] {
+                opacity: 0 !important;
+                pointer-events: none !important; /* Mencegah tombol diklik secara gaib */
             }
             
-            /* 2. Sembunyikan badge container khusus Cloud */
-            .viewerBadge_container {
-                display: none !important;
-            }
-            #viewerBadge_container {
-                display: none !important;
-            }
-            
-            /* 3. Sembunyikan tombol Deploy di pojok kanan */
+            /* Mengubah tombol Deploy menjadi 100% transparan */
             .stDeployButton {
-                display: none !important;
+                opacity: 0 !important;
+                pointer-events: none !important;
             }
+            
+            /* (Opsional) Mengubah Menu Titik Tiga menjadi transparan */
+            /* Hapus tanda komentar di bawah ini jika ingin titik tiga ikut hilang */
+            /* [data-testid="stToolbar"] { opacity: 0 !important; pointer-events: none !important; } */
+            
             </style>
             """
-st.markdown(hide_fork_style, unsafe_allow_html=True)
+st.markdown(hide_st_style, unsafe_allow_html=True)
 import gspread
 import pandas as pd
 from pulp import *
