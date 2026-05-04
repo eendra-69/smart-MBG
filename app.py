@@ -1,17 +1,20 @@
 import streamlit as st
 hide_st_style = """
             <style>
-            /* 1. Menyembunyikan tombol Deploy / Fork bawaan Streamlit */
-            .stDeployButton {display:none;}
+            /* 1. Sembunyikan seluruh header (termasuk tombol Fork yang membandel) */
+            header[data-testid="stHeader"] {
+                visibility: hidden !important;
+            }
             
-            /* 2. Menyembunyikan badge GitHub / Fork khusus di Streamlit Cloud */
-            .viewerBadge_container {display:none;}
+            /* 2. TAPI, paksa tombol Side Panel (ikon > di kiri) untuk tetap muncul */
+            header[data-testid="stHeader"] [data-testid="collapsedControl"] {
+                visibility: visible !important;
+            }
             
-            /* 3. Menyembunyikan menu titik tiga (opsional) */
-            #MainMenu {visibility: hidden;} 
-            
-            /* 4. Menyembunyikan tulisan 'Made with Streamlit' di bawah */
-            footer {visibility: hidden;}
+            /* 3. Sembunyikan footer 'Made with Streamlit' */
+            footer {
+                visibility: hidden !important;
+            }
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
