@@ -1,12 +1,20 @@
 import streamlit as st
-#hide_st_style = """
-#            <style>
-#            #MainMenu {visibility: hidden;} /* Menyembunyikan menu titik tiga */
-#            header {visibility: hidden;}    /* Menyembunyikan seluruh bilah atas (tombol Fork/GitHub) */
-#            footer {visibility: hidden;}    /* Menyembunyikan tulisan 'Made with Streamlit' */
-#           </style>
-#            """
-#st.markdown(hide_st_style, unsafe_allow_html=True)
+hide_st_style = """
+            <style>
+            /* 1. Menyembunyikan tombol Deploy / Fork bawaan Streamlit */
+            .stDeployButton {display:none;}
+            
+            /* 2. Menyembunyikan badge GitHub / Fork khusus di Streamlit Cloud */
+            .viewerBadge_container {display:none;}
+            
+            /* 3. Menyembunyikan menu titik tiga (opsional) */
+            #MainMenu {visibility: hidden;} 
+            
+            /* 4. Menyembunyikan tulisan 'Made with Streamlit' di bawah */
+            footer {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 import gspread
 import pandas as pd
 from pulp import *
