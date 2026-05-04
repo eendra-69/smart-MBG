@@ -1,5 +1,4 @@
 import streamlit as st
-# [KODE JURUS PAMUNGKAS UNTUK MENYEMBUNYIKAN HEADER & TOMBOL]
 hide_st_style = """
             <style>
             #MainMenu {visibility: hidden;} /* Menyembunyikan menu titik tiga */
