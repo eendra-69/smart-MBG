@@ -1,20 +1,19 @@
 import streamlit as st
+# [KODE CSS SNIPER: MENYEMBUNYIKAN FORK & TOOLBAR SAJA]
 hide_st_style = """
             <style>
-            /* 1. Sembunyikan seluruh header (termasuk tombol Fork yang membandel) */
-            header[data-testid="stHeader"] {
-                visibility: hidden !important;
-            }
+            /* 1. Bidik dan sembunyikan tombol Deploy */
+            .stDeployButton {display: none !important;}
             
-            /* 2. TAPI, paksa tombol Side Panel (ikon > di kiri) untuk tetap muncul */
-            header[data-testid="stHeader"] [data-testid="collapsedControl"] {
-                visibility: visible !important;
-            }
+            /* 2. Bidik dan sembunyikan semua elemen Toolbar di pojok kanan (termasuk titik tiga) */
+            [data-testid="stToolbar"] {display: none !important;}
             
-            /* 3. Sembunyikan footer 'Made with Streamlit' */
-            footer {
-                visibility: hidden !important;
-            }
+            /* 3. Bidik dan sembunyikan tombol Fork / GitHub Badge bawaan Streamlit Cloud (Sangat Ampuh) */
+            [class^="viewerBadge_"] {display: none !important;}
+            [class^="styles_viewerBadge_"] {display: none !important;}
+            
+            /* 4. Sembunyikan tulisan Footer di bawah */
+            footer {visibility: hidden !important;}
             </style>
             """
 st.markdown(hide_st_style, unsafe_allow_html=True)
