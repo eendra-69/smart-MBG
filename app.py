@@ -1,4 +1,32 @@
 import streamlit as st
+# ==========================================
+# PENGATURAN TAMPILAN UI (CSS HACK ALTERNATIF)
+# ==========================================
+hide_fork_style = """
+            <style>
+            /* 1. Sembunyikan khusus elemen iframe/jendela yang disuntikkan Streamlit Cloud */
+            iframe[title*="GitHub"] {
+                display: none !important;
+            }
+            iframe[src*="badge"] {
+                display: none !important;
+            }
+            
+            /* 2. Sembunyikan badge container khusus Cloud */
+            .viewerBadge_container {
+                display: none !important;
+            }
+            #viewerBadge_container {
+                display: none !important;
+            }
+            
+            /* 3. Sembunyikan tombol Deploy di pojok kanan */
+            .stDeployButton {
+                display: none !important;
+            }
+            </style>
+            """
+st.markdown(hide_fork_style, unsafe_allow_html=True)
 import gspread
 import pandas as pd
 from pulp import *
