@@ -1,12 +1,12 @@
 import streamlit as st
-hide_st_style = """
-            <style>
-            #MainMenu {visibility: hidden;} /* Menyembunyikan menu titik tiga */
-            header {visibility: hidden;}    /* Menyembunyikan seluruh bilah atas (tombol Fork/GitHub) */
-            footer {visibility: hidden;}    /* Menyembunyikan tulisan 'Made with Streamlit' */
-            </style>
-            """
-st.markdown(hide_st_style, unsafe_allow_html=True)
+#hide_st_style = """
+#            <style>
+#            #MainMenu {visibility: hidden;} /* Menyembunyikan menu titik tiga */
+#            header {visibility: hidden;}    /* Menyembunyikan seluruh bilah atas (tombol Fork/GitHub) */
+#            footer {visibility: hidden;}    /* Menyembunyikan tulisan 'Made with Streamlit' */
+#           </style>
+#            """
+#st.markdown(hide_st_style, unsafe_allow_html=True)
 import gspread
 import pandas as pd
 from pulp import *
